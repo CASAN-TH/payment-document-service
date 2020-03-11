@@ -5,9 +5,58 @@ var Schema = mongoose.Schema;
 
 
 var PaymentSchema = new Schema({
+    no: {
+        type: String
+    },
+    date: {
+        type: Date
+    },
     name: {
+        type: String
+    },
+    card_id: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    lists: {
+        type: [
+            {
+                no: {
+                    type: String
+                },
+                description: {
+                    type: String
+                },
+                amount: {
+                    type: Number
+                }
+            }
+        ]
+    },
+    total: {
+        type: Number
+    },
+    total_text: {
+        type: String
+    },
+    pay_type: {
         type: String,
-        required: 'Please fill a Payment name',
+        enum: ['check','transfer','money']
+    },
+    pay_description: {
+        type: {
+            banking: {
+                type: String
+            },
+            pay_no: {
+                type: String
+            },
+            date: {
+                type: Date
+            }
+        }
     },
     created: {
         type: Date,
