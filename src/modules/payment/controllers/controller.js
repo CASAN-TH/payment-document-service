@@ -60,15 +60,13 @@ exports.getList = function (req, res) {
 // };
 
 exports.summary = function (req, res, next) {
-    console.log(req.body.lists)
-    
-    req.body.total = 0
+    var total = 0
 
     for (let i = 0; i < req.body.lists.length; i++) {
         const item = req.body.lists[i];
-        console.log(item)
+        total += item.amount;
     }
-
+    req.body.total = total
     next();
 };
 
