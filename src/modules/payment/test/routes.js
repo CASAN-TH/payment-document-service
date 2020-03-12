@@ -16,7 +16,7 @@ describe('Payment CRUD routes tests', function () {
 
     before(function (done) {
         mockup = {
-            "date": "2020-11-18T12:20",
+            "date": "2020-11-18",
             "name": "นาย กอ ขอ",
             "card_id": "1158988856985",
             "address": "13/554 casa-city",
@@ -169,39 +169,71 @@ describe('Payment CRUD routes tests', function () {
 
     it('should be get all Date', function (done) {
         request(app)
-        .post('/api/payments')
-        .set('Authorization', 'Bearer ' + token)
-        .send(mockup)
-        .expect(200)
-        .end(function (err, res) {
-            if (err) {
-                return done(err);
-            }
-            var resp = res.body;
-            request(app)
-                .get('/api/payments')
-                .set('Authorization', 'Bearer ' + token)
-                .expect(200)
-                .end(function (err, res) {
-                    if (err) {
-                        return done(err);
+            .post('/api/payments')
+            .set('Authorization', 'Bearer ' + token)
+            .send(mockup)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    return done(err);
+                }
+                var resp = res.body;
+
+                var mock2 = {
+                    "date": "2020-11-18",
+                    "name": "นาย กอ ขอ",
+                    "card_id": "1158988856985",
+                    "address": "13/554 casa-city",
+                    "lists": [
+                        {
+                            "description": "คืนเงิน",
+                            "amount": 300
+                        }
+                    ],
+                    "pay_type": "check",
+                    "pay_description": {
+                        "banking": "กรุงเทพฯ",
+                        "pay_no": "111",
+                        "date": "2020-11-13"
                     }
-                    var resp = res.body;
-                    // console.log(resp.data)
-                    assert.equal(resp.status, 200);
-                    // assert.equal(resp.data.date, mockup.date);
-                    assert.equal(resp.data[0].name, mockup.name);
-                    assert.equal(resp.data[0].card_id, mockup.card_id);
-                    assert.equal(resp.data[0].address, mockup.address);
-                    assert.equal(resp.data[0].lists.description, mockup.lists.description);
-                    assert.equal(resp.data[0].lists.amount, mockup.lists.amount);
-                    assert.equal(resp.data[0].pay_type, mockup.pay_type);
-                    assert.equal(resp.data[0].pay_description.banking, mockup.pay_description.banking);
-                    assert.equal(resp.data[0].pay_description.pay_no, mockup.pay_description.pay_no);
-                    assert.equal(resp.data[0].pay_description.date, mockup.pay_description.date);
-                    done();
-                });
-        });
+                };
+
+                request(app)
+                    .post('/api/payments')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(mock2)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            return done(err);
+                        }
+                        var resp = res.body;
+
+                        request(app)
+                            .get('/api/payments')
+                            .set('Authorization', 'Bearer ' + token)
+                            .expect(200)
+                            .end(function (err, res) {
+                                if (err) {
+                                    return done(err);
+                                }
+                                var resp = res.body;
+                                // console.log(resp.data)
+                                assert.equal(resp.status, 200);
+                                // assert.equal(resp.data.date, mockup.date);
+                                assert.equal(resp.data[0].name, mockup.name);
+                                assert.equal(resp.data[0].card_id, mockup.card_id);
+                                assert.equal(resp.data[0].address, mockup.address);
+                                assert.equal(resp.data[0].lists.description, mockup.lists.description);
+                                assert.equal(resp.data[0].lists.amount, mockup.lists.amount);
+                                assert.equal(resp.data[0].pay_type, mockup.pay_type);
+                                assert.equal(resp.data[0].pay_description.banking, mockup.pay_description.banking);
+                                assert.equal(resp.data[0].pay_description.pay_no, mockup.pay_description.pay_no);
+                                assert.equal(resp.data[0].pay_description.date, mockup.pay_description.date);
+                                done();
+                            });
+                    });
+            });
     })
 
     it('should be payment delete use token', function (done) {

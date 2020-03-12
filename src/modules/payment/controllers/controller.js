@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     mq = require('../../core/controllers/rabbitmq'),
     Payment = mongoose.model('Payment'),
     errorHandler = require('../../core/controllers/errors.server.controller'),
+    moment = require('moment'),
     _ = require('lodash');
 
 exports.getList = function (req, res) {
@@ -16,23 +17,63 @@ exports.getList = function (req, res) {
     }
     query.skip = size * (pageNo - 1);
     query.limit = size;
-        Payment.find({}, {}, query, function (err, datas) {
-            if (err) {
-                return res.status(400).send({
-                    status: 400,
-                    message: errorHandler.getErrorMessage(err)
-                });
-            } else {
-                res.jsonp({
-                    status: 200,
-                    data: datas
-                });
-            };
-        });
+    Payment.find({}, {}, query, function (err, datas) {
+        if (err) {
+            return res.status(400).send({
+                status: 400,
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.jsonp({
+                status: 200,
+                data: datas
+            });
+        };
+    });
+};
+
+// exports.genDocNo = function (req, res, next) {
+//     const startOfMonth = moment(req.body.date).startOf('month').format('YYYY-MM-DD');
+//     const endOfMonth = moment(req.body.date).endOf('month').format('YYYY-MM-DD');
+//     console.log(startOfMonth);
+//     console.log(endOfMonth);
+
+//     Payment.find({ date: { $gte: startOfMonth, $lte: endOfMonth } }, function (err, datas) {
+//         if (err) {
+//             return res.status(400).send({
+//                 status: 400,
+//                 message: errorHandler.getErrorMessage(err)
+//             });
+//         };
+//         // console.log(datas.length);
+//         var year = new Date(req.body.date).getFullYear();
+//         var month = new Date(req.body.date).getMonth() + 1;
+//         var num = datas.length + 1;
+//         var no = num.toString().padStart(3, "0");
+//         var docNo = year.toString() + '-' + month.toString() + '-' + no.toString();
+//         // console.log(docNo);
+
+//         req.body.no = docNo;
+//         // console.log(datas);
+//         next();
+//     });
+// };
+
+exports.summary = function (req, res, next) {
+    console.log(req.body.lists)
+    
+    req.body.total = 0
+
+    for (let i = 0; i < req.body.lists.length; i++) {
+        const item = req.body.lists[i];
+        console.log(item)
+    }
+
+    next();
 };
 
 exports.create = function (req, res) {
-    var newPayment = new Payment (req.body);
+    var newPayment = new Payment(req.body);
     newPayment.createby = req.user;
     newPayment.save(function (err, data) {
         if (err) {

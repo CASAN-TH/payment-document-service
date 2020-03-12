@@ -7,7 +7,11 @@ module.exports = function (app) {
     var urlWithParam = '/api/payments/:paymentId';
     app.route(url)//.all(policy.isAllowed)
         .get(controller.getList)
-        .post(controller.create);
+        .post(
+            // controller.genDocNo,
+            controller.summary,
+            controller.create
+        );
 
     app.route(urlWithParam)//.all(policy.isAllowed)
         .get(controller.read)
@@ -24,6 +28,6 @@ module.exports = function (app) {
      */
     // mq.consume('exchange', 'qname', 'keymsg', (msg)=>{
     //     console.log(JSON.parse(msg.content));
-        
+
     // });
 }
