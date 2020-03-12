@@ -222,7 +222,7 @@ describe('Payment CRUD routes tests', function () {
                                     return done(err);
                                 }
                                 var resp = res.body;
-                                console.log(resp.data)
+                                // console.log(resp.data)
                                 assert.equal(resp.status, 200);
                                 // assert.equal(resp.data.date, mockup.date);
                                 assert.equal(resp.data[0].name, mockup.name);
